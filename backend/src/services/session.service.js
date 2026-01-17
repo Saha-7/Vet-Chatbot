@@ -1,41 +1,60 @@
-import { randomUUID } from 'crypto';
-import Session from '../models/Session.js';
-import Message from '../models/Message.js';
+import Appointment from '../models/Appointment.js';
 
-export const createSession = async (context = {}) => {
-  const sessionId = randomUUID();
-  
-  const session = await Session.create({
+/**
+ * Create a new veterinary appointment
+ */
+export const createAppointment = async (appointmentData) => {
+  const { sessionId, ownerName, petName, phone, dateTime } = appointmentData;
+
+  // Basic required field validation
+  if (!ownerName || !petName || !phone || !dateTime) {
+    throw new Error('Missing required appointment fields');
+  }
+
+  // Validate phone number
+  if (!isValidPhone(phone)) {
+    throw new Error('Invalid phone number');
+  }
+
+  // Validate appointment date
+  if (!isValidDate(dateTime)) {
+    throw new Error('Invalid appointment date');
+  }
+
+  const appointment = await Appointment.create({
     sessionId,
-    context,
+    ownerName,
+    petName,
+    phone: phone.replace(/\s+/g, ''), // normalize phone
+    dateTime: new Date(dateTime),
   });
 
-  return session;
+  return appointment;
 };
 
-export const getSession = async (sessionId) => {
-  const session = await Session.findOne({ sessionId });
-  return session;
+/**
+ * Fetch appointments linked to a chat session
+ */
+export const getAppointmentsBySession = async (sessionId) => {
+  const appointments = await Appointment.find({ sessionId })
+    .sort({ createdAt: -1 })
+    .lean();
+
+  return appointments;
 };
 
-export const saveMessage = async (sessionId, sender, text) => {
-  const message = await Message.create({
-    sessionId,
-    sender,
-    text,
-  });
-
-  return message;
+/**
+ * Validate phone number (basic, country-agnostic)
+ */
+export const isValidPhone = (phone) => {
+  const phoneRegex = /^[\d\s\-\+\(\)]{10,}$/;
+  return phoneRegex.test(phone);
 };
 
-export const getConversationHistory = async (sessionId, limit = 10) => {
-  const messages = await Message.find({ sessionId })
-    .sort({ timestamp: 1 })
-    .limit(limit);
-
-  // Format for Gemini API
-  return messages.map(msg => ({
-    role: msg.sender === 'user' ? 'user' : 'model',
-    parts: [{ text: msg.text }],
-  }));
+/**
+ * Validate appointment date (must be a valid future date)
+ */
+export const isValidDate = (dateString) => {
+  const date = new Date(dateString);
+  return !isNaN(date) && date > new Date();
 };
