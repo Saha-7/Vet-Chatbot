@@ -74,8 +74,14 @@ export const getAIResponse = async (userMessage, conversationHistory = []) => {
 
     return cleanedText;
   } catch (error) {
-    console.error('Gemini API Error:', error.message);
-    throw new Error('Failed to get AI response');
+    console.error('Gemini Error:', err.message);
+
+  // Graceful fallback when quota is exhausted
+  if (err.message.includes('RESOURCE_EXHAUSTED') || err.message.includes('429')) {
+    return "I'm currently experiencing high demand, but I can still help you book an appointment or answer basic pet care questions.";
+  }
+
+  return "I'm here to help with veterinary questions and appointment booking. Please let me know how I can assist you.";
   }
 };
 
