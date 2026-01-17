@@ -26,19 +26,19 @@ export const getAIResponse = async (userMessage, conversationHistory = []) => {
   try {
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) {
-      throw new Error('GEMINI_API_KEY is not configured');
+      throw new Error("GEMINI_API_KEY is not configured");
     }
 
-    const modelToUse = 'gemini-2.5-flash';
+    const modelToUse = "gemini-2.5-flash";
 
-    let prompt = SYSTEM_PROMPT + '\n\n';
+    let prompt = SYSTEM_PROMPT + "\n\n";
 
     if (conversationHistory.length > 0) {
-      conversationHistory.forEach(msg => {
-        const role = msg.role === 'user' ? 'User' : 'Assistant';
+      conversationHistory.forEach((msg) => {
+        const role = msg.role === "user" ? "User" : "Assistant";
         prompt += `${role}: ${msg.parts[0].text}\n`;
       });
-      prompt += '\n';
+      prompt += "\n";
     }
 
     prompt += `User: ${userMessage}\nAssistant:`;
@@ -46,8 +46,8 @@ export const getAIResponse = async (userMessage, conversationHistory = []) => {
     const url = `https://generativelanguage.googleapis.com/v1/models/${modelToUse}:generateContent?key=${apiKey}`;
 
     const response = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         contents: [{ parts: [{ text: prompt }] }],
         generationConfig: {
@@ -59,8 +59,8 @@ export const getAIResponse = async (userMessage, conversationHistory = []) => {
 
     if (!response.ok) {
       const errorData = await response.json();
-      console.error('API Error:', errorData);
-      throw new Error('Gemini API request failed');
+      console.error("API Error:", errorData);
+      throw new Error("Gemini API request failed");
     }
 
     const data = await response.json();
@@ -68,30 +68,39 @@ export const getAIResponse = async (userMessage, conversationHistory = []) => {
 
     // ✅ CLEAN NEWLINES HERE
     const cleanedText = rawText
-      .replace(/\n+/g, ' ')   // replace newlines with space
-      .replace(/\s+/g, ' ')   // normalize spaces
+      .replace(/\n+/g, " ") // replace newlines with space
+      .replace(/\s+/g, " ") // normalize spaces
       .trim();
 
     return cleanedText;
   } catch (error) {
-    console.error('Gemini Error:', err.message);
+    console.error("Gemini Error:", err.message);
 
-  // Graceful fallback when quota is exhausted
-  if (err.message.includes('RESOURCE_EXHAUSTED') || err.message.includes('429')) {
-    return "I'm currently experiencing high demand, but I can still help you book an appointment or answer basic pet care questions.";
-  }
+    // Graceful fallback when quota is exhausted
+    if (
+      err.message.includes("RESOURCE_EXHAUSTED") ||
+      err.message.includes("429")
+    ) {
+      return "I'm currently experiencing high demand, but I can still help you book an appointment or answer basic pet care questions.";
+    }
 
-  return "I'm here to help with veterinary questions and appointment booking. Please let me know how I can assist you.";
+    return "I'm here to help with veterinary questions and appointment booking. Please let me know how I can assist you.";
   }
 };
 
-
 export const detectAppointmentIntent = (message) => {
   const appointmentKeywords = [
-    'book', 'appointment', 'schedule', 'visit', 'consultation',
-    'checkup', 'check-up', 'see vet', 'vet visit'
+    "book",
+    "appointment",
+    "schedule",
+    "visit",
+    "consultation",
+    "checkup",
+    "check-up",
+    "see vet",
+    "vet visit",
   ];
-  
+
   const lowerMessage = message.toLowerCase();
-  return appointmentKeywords.some(keyword => lowerMessage.includes(keyword));
+  return appointmentKeywords.some((keyword) => lowerMessage.includes(keyword));
 };
