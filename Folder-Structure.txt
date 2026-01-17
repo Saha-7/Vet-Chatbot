@@ -30,6 +30,7 @@ vet-chatbot/
 │   │   ├── App.jsx
 │   │   └── main.jsx
 │   ├── public/
-│   │   └── embed.js (SDK script)
+│   │   └── chatbot.js (SDK script)
 │   └── package.json
 └── README.md
+|__ test.html
