@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chatbot Test</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 50px;
+      background: #f0f0f0;
+    }
+    h1 {
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <h1>🧪 Chatbot SDK Test Page</h1>
+  <p>The chatbot should appear in the bottom-right corner.</p>
+  <p>Open browser console (F12) to see debug logs.</p>
+
+  <!-- SDK Configuration (Optional) -->
+  <script>
+    window.VetChatbotConfig = {
+      userId: "test_123",
+      userName: "Test User",
+      petName: "Buddy",
+      source: "test-page"
+    };
+  </script>
+
+  <!-- Load SDK - UPDATE PATH if needed -->
+  <script src="./frontend/public/chatbot.js"></script>
+</body>
+</html>
