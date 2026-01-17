@@ -1,10 +1,10 @@
+
 import {
   createSession,
   getSession,
   saveMessage,
   getConversationHistory,
 } from '../services/session.service.js';
-
 import { getAIResponse } from '../services/gemini.service.js';
 
 export const handleChat = async (req, res) => {
@@ -54,9 +54,12 @@ export const handleChat = async (req, res) => {
     });
   } catch (error) {
     console.error('Chat Error:', error);
+    console.error('Error details:', error.message);
+    console.error('Stack trace:', error.stack);
     res.status(500).json({
       success: false,
       message: 'Failed to process message',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined,
     });
   }
 };
