@@ -3,9 +3,10 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import connectDB from './config/db.js';
 
-
+// Load environment variables
 dotenv.config();
 
+// Initialize Express
 const app = express();
 
 // Middleware
@@ -28,8 +29,9 @@ app.get('/health', (req, res) => {
   });
 });
 
-// API routes will be added here
-// app.use('/api', routes);
+// API routes
+import routes from './routes/index.js';
+app.use('/api', routes);
 
 // 404 handler
 app.use((req, res) => {
@@ -52,7 +54,7 @@ app.use((err, req, res, next) => {
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
-  //console.log(`🌍 Environment: ${process.env.NODE_ENV}`);
+  console.log(`🌍 Environment: ${process.env.NODE_ENV}`);
 });
 
 export default app;
