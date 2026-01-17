@@ -1,16 +1,6 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
+const SYSTEM_PROMPT = `You are a helpful veterinary assistant chatbot. Your role is to:
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-
-/**
- * System-level rules for the chatbot.
- * This is NOT a user message.
- */
-const SYSTEM_PROMPT = `
-You are a helpful veterinary assistant chatbot.
-
-Rules:
-1. Answer ONLY veterinary-related questions such as:
+1. Answer ONLY veterinary-related questions about:
    - Pet care and health
    - Vaccinations
    - Diet and nutrition
@@ -18,67 +8,84 @@ Rules:
    - Preventive care
    - General pet wellness
 
-2. Help users book veterinary appointments when they request it.
+2. Help users book veterinary appointments when they ask.
 
-3. If the user asks a NON-veterinary question, respond with:
-   "I can only help with veterinary-related questions and appointment booking."
+3. For NON-veterinary questions, politely say: "I can only help with veterinary-related questions and appointment booking."
 
-4. Be concise, friendly, and professional.
+4. Keep responses concise, friendly, and professional.
 
-5. When booking an appointment, collect:
+5. When users want to book an appointment, ask for:
    - Pet owner name
    - Pet name
    - Phone number
    - Preferred date and time
-`;
 
-/**
- * Generate AI response using Gemini
- * @param {string} userMessage - latest user message
- * @param {Array} conversationHistory - previous messages in Gemini format
- */
+Always be helpful and caring about pet wellness.`;
+
 export const getAIResponse = async (userMessage, conversationHistory = []) => {
   try {
-    const model = genAI.getGenerativeModel({
-      model: 'gemini-1.5-flash',
-      systemInstruction: SYSTEM_PROMPT,
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) {
+      throw new Error('GEMINI_API_KEY is not configured');
+    }
+
+    const modelToUse = 'gemini-2.5-flash';
+
+    let prompt = SYSTEM_PROMPT + '\n\n';
+
+    if (conversationHistory.length > 0) {
+      conversationHistory.forEach(msg => {
+        const role = msg.role === 'user' ? 'User' : 'Assistant';
+        prompt += `${role}: ${msg.parts[0].text}\n`;
+      });
+      prompt += '\n';
+    }
+
+    prompt += `User: ${userMessage}\nAssistant:`;
+
+    const url = `https://generativelanguage.googleapis.com/v1/models/${modelToUse}:generateContent?key=${apiKey}`;
+
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: prompt }] }],
+        generationConfig: {
+          maxOutputTokens: 300,
+          temperature: 0.7,
+        },
+      }),
     });
 
-    const chat = model.startChat({
-      history: conversationHistory, // only real past messages
-      generationConfig: {
-        maxOutputTokens: 500,
-        temperature: 0.7,
-      },
-    });
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error('API Error:', errorData);
+      throw new Error('Gemini API request failed');
+    }
 
-    const result = await chat.sendMessage(userMessage);
-    return result.response.text();
+    const data = await response.json();
+    const rawText = data.candidates[0].content.parts[0].text;
+
+    // ✅ CLEAN NEWLINES HERE
+    const cleanedText = rawText
+      .replace(/\n+/g, ' ')   // replace newlines with space
+      .replace(/\s+/g, ' ')   // normalize spaces
+      .trim();
+
+    return cleanedText;
   } catch (error) {
-    console.error('Gemini API Error:', error);
+    console.error('Gemini API Error:', error.message);
     throw new Error('Failed to get AI response');
   }
 };
 
-/**
- * Simple keyword-based appointment intent detection
- * @param {string} message
- */
+
 export const detectAppointmentIntent = (message) => {
   const appointmentKeywords = [
-    'book',
-    'appointment',
-    'schedule',
-    'visit',
-    'consultation',
-    'checkup',
-    'check-up',
-    'see vet',
-    'vet visit',
+    'book', 'appointment', 'schedule', 'visit', 'consultation',
+    'checkup', 'check-up', 'see vet', 'vet visit'
   ];
-
+  
   const lowerMessage = message.toLowerCase();
-  return appointmentKeywords.some(keyword =>
-    lowerMessage.includes(keyword)
-  );
+  return appointmentKeywords.some(keyword => lowerMessage.includes(keyword));
 };
