@@ -7,6 +7,24 @@ A website-integrable chatbot SDK built with the MERN stack that provides AI-powe
 
 This chatbot can be embedded into any website using a simple script tag. It uses Google Gemini API for intelligent responses, answers veterinary-related questions, and facilitates appointment booking through a conversational interface.
 
+
+
+## Screenshots
+
+<img width="435" height="629" alt="Vet-chatbot" src="https://github.com/user-attachments/assets/de1f3c8a-88f1-45d8-bd82-73232ac056b4" />
+<img width="1362" height="671" alt="Screenshot 2026-01-17 225525" src="https://github.com/user-attachments/assets/8ed55631-b173-4d5d-a45e-b90eebc5f5ce" />
+<img width="1365" height="674" alt="Screenshot 2026-01-17 225544" src="https://github.com/user-attachments/assets/bcdbb816-3909-48dd-b28e-575be9d00952" />
+
+<img width="1001" height="263" alt="Screenshot 2026-01-18 002030" src="https://github.com/user-attachments/assets/58a92f42-dd24-4d01-b180-0cbb2ebac89e" />
+
+<img width="965" height="410" alt="session" src="https://github.com/user-attachments/assets/dbc6e8cf-79bf-4438-8d6c-1a6f5e90db11" />
+
+<img width="951" height="301" alt="msg" src="https://github.com/user-attachments/assets/06ff4c5c-c032-4121-9907-850480e76fdc" />
+
+<img width="614" height="289" alt="Appointment" src="https://github.com/user-attachments/assets/8e5efa7f-b0c5-4647-b3d5-07afa7e12e46" />
+
+
+
 ## Tech Stack
 
 - **Frontend**: React + Vite
