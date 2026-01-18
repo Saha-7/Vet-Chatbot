@@ -74,12 +74,12 @@ export const getAIResponse = async (userMessage, conversationHistory = []) => {
 
     return cleanedText;
   } catch (error) {
-    console.error("Gemini Error:", err.message);
+    console.error("Gemini Error:", error.message);
 
     // Graceful fallback when quota is exhausted
     if (
-      err.message.includes("RESOURCE_EXHAUSTED") ||
-      err.message.includes("429")
+      error.message.includes("RESOURCE_EXHAUSTED") ||
+      error.message.includes("429")
     ) {
       return "I'm currently experiencing high demand, but I can still help you book an appointment or answer basic pet care questions.";
     }
