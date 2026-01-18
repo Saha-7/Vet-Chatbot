@@ -10,7 +10,7 @@
     return;
   }
 
-  const API_URL = 'http://localhost:5000/api'; // UPDATE THIS with your backend URL
+  const API_URL = 'https://vet-chatbot-38qx.onrender.com/api'; // UPDATE THIS with your backend URL
   
   // Get configuration from window object
   const config = window.VetChatbotConfig || {};
