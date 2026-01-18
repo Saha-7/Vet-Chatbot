@@ -17,6 +17,9 @@ https://github.com/user-attachments/assets/9fb1365c-e237-46df-a667-f3fed991c5a0
 <img width="435" height="629" alt="Vet-chatbot" src="https://github.com/user-attachments/assets/de1f3c8a-88f1-45d8-bd82-73232ac056b4" />
 <img width="1362" height="671" alt="Screenshot 2026-01-17 225525" src="https://github.com/user-attachments/assets/8ed55631-b173-4d5d-a45e-b90eebc5f5ce" />
 <img width="1365" height="674" alt="Screenshot 2026-01-17 225544" src="https://github.com/user-attachments/assets/bcdbb816-3909-48dd-b28e-575be9d00952" />
+<img width="1001" height="263" alt="Screenshot 2026-01-18 002030" src="https://github.com/user-attachments/assets/46cf5981-a006-48a9-b09c-c6d0041e6fc0" />
+<img width="951" height="301" alt="msg" src="https://github.com/user-attachments/assets/043696a6-87cb-4dbf-89ee-2865a2748c1d" />
+<img width="614" height="289" alt="Appointment" src="https://github.com/user-attachments/assets/0d385b17-0d83-4abf-bc8f-def40c1725d5" />
 
 
 ## Tech Stack
